@@ -13,9 +13,15 @@
 |
 */
 
+$router->get('/api/debugShow', 'ArticleController@debugShowArticles');
+
 $router->get('/api/articles', 'ArticleController@showAllArticles');
 
 $router->post('/api/create', 'ArticleController@createArticle');
+
+$router->post('/api/edit', 'ArticleController@editArticle');
+
+$router->get('/api/delete', 'ArticleController@deleteArticle');
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
