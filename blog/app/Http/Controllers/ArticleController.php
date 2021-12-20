@@ -32,7 +32,8 @@ class ArticleController extends Controller
                 'name' => $article->name,
                 'author' => $article->author,
                 'creation_time' => $article->creation_time,
-                'publication_date' => $article->publication_date
+                'publication_date' => $article->publication_date,
+                // 'mood' => $this->getTextMood($article->text)
             ]);
         }
         return response()->json($articles);
@@ -43,6 +44,11 @@ class ArticleController extends Controller
      */
     public function createArticle(Request $request) 
     {
+        $this->validate($request, [
+            'name' => 'required|string',
+            'author' => 'required|string',
+            'text' => 'required|string',
+        ]);
         $article = Article::create($request->all());
         return response()->json($article, 201);
     }
@@ -52,7 +58,12 @@ class ArticleController extends Controller
      */
     public function editArticle(Request $request) 
     {
-        $article = Article::where('id', $request->id)
+        $this->validate($request, [
+            'id' => 'required|integer',
+            'text' => 'required|string',
+        ]);
+
+        $article = Article::findOrFail($request->id)
                     ->update(['text' => $request->text]);
         return response()->json($article, 201);
     }
@@ -63,9 +74,38 @@ class ArticleController extends Controller
      */
     public function deleteArticle(Request $request) 
     {
+        $this->validate($request, [
+            'id' => 'required'
+        ]);
+
         $article = Article::findOrFail($request->id);
         $article->delete();
         return response("Successful");  
+    }
+
+    public function getTextMood(string $text) {
+        $curl = curl_init("https://sentim-api.herokuapp.com/api/v1/");
+
+        $headers = array(
+            "Accept: application/json",
+            "Content-Type: application/json",
+        );
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $data = <<<DATA
+        {
+            "text": "Today is good weather"
+        }
+        DATA;
+        
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        
+        //for debug only!
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        
+        $resp = curl_exec($curl);
+        curl_close($curl);    
+        return $resp;
     }
 
     /**
