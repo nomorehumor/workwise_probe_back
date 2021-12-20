@@ -15,6 +15,8 @@
 
 $router->get('/api/articles', 'ArticleController@showAllArticles');
 
+$router->post('/api/create', 'ArticleController@createArticle');
+
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });

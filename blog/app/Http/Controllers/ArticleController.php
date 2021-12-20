@@ -24,7 +24,8 @@ class ArticleController extends Controller
 
     public function createArticle(Request $request) 
     {
-        //
+        $article = Article::create($request->all());
+        return response()->json($article, 201);
     }
 
     //

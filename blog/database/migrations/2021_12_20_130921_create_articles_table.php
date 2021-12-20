@@ -20,6 +20,7 @@ class CreateArticlesTable extends Migration
             $table->text("text");
             $table->time("creation_time");
             $table->time("publication_date");
+            $table->timestamps();
         });
     }
 
