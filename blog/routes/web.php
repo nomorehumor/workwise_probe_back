@@ -13,7 +13,7 @@
 |
 */
 
-$router->get('api/authors', 'NewsController@show_all');
+$router->get('/api/articles', 'ArticleController@showAllArticles');
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
